@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Warm off-white background */
+    --background: 38 25% 97%;
+    --foreground: 0 0% 11%;
+
+    /* White surface cards */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 11%;
+
+    /* Deep Chianti red primary */
+    --primary: 0 72% 34%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Warm secondary */
+    --secondary: 38 20% 94%;
+    --secondary-foreground: 0 0% 20%;
+
+    /* Muted tones */
+    --muted: 38 15% 92%;
+    --muted-foreground: 0 0% 42%;
+
+    /* Accent (lighter red tint) */
+    --accent: 0 30% 96%;
+    --accent-foreground: 0 72% 34%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Success green */
+    --success: 142 71% 32%;
+    --success-foreground: 0 0% 100%;
+
+    /* Warm border */
+    --border: 30 15% 88%;
+    --input: 30 15% 88%;
+    --ring: 0 72% 34%;
+
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  }
+
+  h1, h2, h3 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .font-mono-numbers {
+    font-family: 'JetBrains Mono', Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .receipt-line {
+    @apply flex items-center justify-between py-1.5 border-b border-dashed border-border last:border-0;
+  }
+  .kpi-number {
+    @apply font-mono-numbers text-3xl font-medium tracking-tight;
+  }
+  .shimmer-bg {
+    background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--secondary)) 50%, hsl(var(--muted)) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+  }
+}

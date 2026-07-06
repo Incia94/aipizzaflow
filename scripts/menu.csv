@@ -1,0 +1,6 @@
+name,category,available_bases,available_toppings,price
+Margherita,Classic,Thin Crust|Thick Crust|Stuffed Crust,Tomato Sauce|Mozzarella|Extra Cheese,299.00
+Pepperoni,Non-Veg,Thin Crust|Thick Crust,Pepperoni|Mozzarella|Jalapenos,399.00
+Farmhouse,Veg,Thin Crust|Thick Crust|Stuffed Crust,Corn|Capsicum|Onion|Tomato,349.00
+BBQ Chicken,Non-Veg,Thin Crust|Stuffed Crust,Grilled Chicken|BBQ Sauce|Onion,449.00
+Veggie Supreme,Veg,Thin Crust|Thick Crust,Mushroom|Capsicum|Olives|Corn|Onion,329.00
