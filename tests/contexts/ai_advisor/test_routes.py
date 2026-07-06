@@ -7,6 +7,7 @@ from app.contexts.ai_advisor.routes import get_ai_service
 from app.contexts.ai_advisor.schemas.ai_advisor_schemas import AIQueryRequest, AIQueryResponse
 from app.contexts.ai_advisor.service import AIService
 from app.contexts.analytics.models.bi_models import BusinessIntelligenceModel
+from app.contexts.auth.dependencies import get_current_admin
 from app.main import app
 
 
@@ -24,6 +25,7 @@ def mock_ai_service() -> AIService:
 @pytest.fixture
 def client_with_mock(mock_ai_service):
     app.dependency_overrides[get_ai_service] = lambda: mock_ai_service
+    app.dependency_overrides[get_current_admin] = lambda: "test-admin"
     yield TestClient(app, raise_server_exceptions=True)
     app.dependency_overrides.clear()
 
