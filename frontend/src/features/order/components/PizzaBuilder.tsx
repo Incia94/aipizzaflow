@@ -1,149 +1,147 @@
 import { useState } from 'react'
 import { Plus, Minus, ChevronDown, ChevronUp } from 'lucide-react'
+
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { cn, formatCurrency } from '@/lib/utils'
 import type { MenuItem } from '@/types'
 import type { CartItem } from '../types'
 
-interface PizzaCardProps {
-  item: MenuItem
+interface PizzaBuilderProps {
+  pizzas: MenuItem[]
+  bases: MenuItem[]
+  toppings: MenuItem[]
   onAdd: (cartItem: CartItem) => void
 }
 
-function PizzaCard({ item, onAdd }: PizzaCardProps) {
+interface PizzaCardProps {
+  pizza: MenuItem
+  bases: MenuItem[]
+  toppings: MenuItem[]
+  onAdd: (cartItem: CartItem) => void
+}
+
+function PizzaCard({ pizza, bases, toppings, onAdd }: PizzaCardProps) {
   const [expanded, setExpanded] = useState(false)
-  const [base, setBase] = useState(item.available_bases[0] ?? '')
-  const [toppings, setToppings] = useState<string[]>([])
+  const [base, setBase] = useState<MenuItem | null>(bases[0] ?? null)
+  const [selectedToppings, setSelectedToppings] = useState<MenuItem[]>([])
   const [qty, setQty] = useState(1)
 
-  const toggleTopping = (t: string) =>
-    setToppings((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]))
+  const toggleTopping = (topping: MenuItem) => {
+    setSelectedToppings((prev) =>
+      prev.some((t) => t.id === topping.id)
+        ? prev.filter((t) => t.id !== topping.id)
+        : [...prev, topping],
+    )
+  }
+
+  const unitPrice =
+    Number(pizza.price) +
+    Number(base?.price ?? 0) +
+    selectedToppings.reduce((sum, topping) => sum + Number(topping.price), 0)
 
   const handleAdd = () => {
+    if (!base) return
+
     onAdd({
-      menuItemId: item.id,
-      name: item.name,
-      category: item.category,
-      baseSelected: base,
-      toppingsSelected: toppings,
+      menuItemId: pizza.id,
+      name: pizza.name,
+      category: pizza.category,
+      baseSelected: base.name,
+      toppingsSelected: selectedToppings.map((t) => t.name),
       quantity: qty,
-      unitPrice: item.price,
+      unitPrice,
     })
+
     setExpanded(false)
-    setToppings([])
+    setSelectedToppings([])
     setQty(1)
   }
 
   return (
-    <div
-      className={cn(
-        'rounded-xl border border-border bg-card shadow-card transition-shadow duration-200',
-        expanded && 'shadow-card-hover',
-      )}
-    >
-      {/* Header */}
+    <div className="rounded-xl border bg-card p-4 shadow-sm">
       <button
         type="button"
-        className="flex w-full items-start justify-between p-4 text-left"
+        className="flex w-full items-center justify-between text-left"
         onClick={() => setExpanded((v) => !v)}
       >
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-medium text-foreground truncate">{item.name}</span>
-            <Badge variant="secondary" className="text-xs shrink-0">{item.category}</Badge>
-          </div>
-          <p className="mt-0.5 font-mono-numbers text-sm text-primary font-medium">
-            {formatCurrency(item.price)}
-          </p>
+        <div>
+          <h3 className="font-semibold">{pizza.name}</h3>
+          <Badge>{pizza.category}</Badge>
         </div>
-        {expanded ? (
-          <ChevronUp className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-        ) : (
-          <ChevronDown className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-        )}
+
+        <div className="flex items-center gap-3">
+          <span className="font-medium">{formatCurrency(Number(pizza.price))}</span>
+          {expanded ? <ChevronUp /> : <ChevronDown />}
+        </div>
       </button>
 
-      {/* Expanded customisation */}
       {expanded && (
-        <div className="border-t border-border px-4 pb-4 pt-3 space-y-4 animate-fade-in">
-          {/* Base */}
+        <div className="mt-4 space-y-4">
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Crust
-            </p>
+            <h4 className="mb-2 font-medium">Crust</h4>
             <div className="flex flex-wrap gap-2">
-              {item.available_bases.map((b) => (
+              {bases.map((b) => (
                 <button
-                  key={b}
+                  key={b.id}
                   type="button"
                   onClick={() => setBase(b)}
                   className={cn(
                     'rounded-full border px-3 py-1 text-sm transition-colors duration-100',
-                    base === b
+                    base?.id === b.id
                       ? 'border-primary bg-primary text-primary-foreground'
                       : 'border-border bg-card text-foreground hover:border-primary/50',
                   )}
                 >
-                  {b}
+                  {b.name} + {formatCurrency(Number(b.price))}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Toppings */}
-          {item.available_toppings.length > 0 && (
+          {toppings.length > 0 && (
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Extra Toppings
-              </p>
+              <h4 className="mb-2 font-medium">Extra Toppings</h4>
               <div className="flex flex-wrap gap-2">
-                {item.available_toppings.map((t) => (
+                {toppings.map((t) => (
                   <button
-                    key={t}
+                    key={t.id}
                     type="button"
                     onClick={() => toggleTopping(t)}
                     className={cn(
                       'rounded-full border px-3 py-1 text-sm transition-colors duration-100',
-                      toppings.includes(t)
+                      selectedToppings.some((selected) => selected.id === t.id)
                         ? 'border-primary bg-primary text-primary-foreground'
                         : 'border-border bg-card text-foreground hover:border-primary/50',
                     )}
                   >
-                    {t}
+                    {t.name} + {formatCurrency(Number(t.price))}
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Quantity + Add */}
-          <div className="flex items-center justify-between pt-1">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Button
                 type="button"
                 variant="outline"
                 size="icon"
-                className="h-8 w-8"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
               >
-                <Minus className="h-3 w-3" />
+                <Minus className="h-4 w-4" />
               </Button>
-              <span className="font-mono-numbers w-6 text-center text-sm font-medium">{qty}</span>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => setQty((q) => q + 1)}
-              >
-                <Plus className="h-3 w-3" />
+
+              <span>{qty}</span>
+
+              <Button type="button" variant="outline" size="icon" onClick={() => setQty((q) => q + 1)}>
+                <Plus className="h-4 w-4" />
               </Button>
             </div>
 
-            <Button type="button" size="sm" onClick={handleAdd}>
-              <Plus className="h-3.5 w-3.5" />
-              Add to Order
+            <Button type="button" onClick={handleAdd}>
+              Add to Order · {formatCurrency(unitPrice * qty)}
             </Button>
           </div>
         </div>
@@ -152,29 +150,17 @@ function PizzaCard({ item, onAdd }: PizzaCardProps) {
   )
 }
 
-interface PizzaBuilderProps {
-  items: MenuItem[]
-  onAdd: (cartItem: CartItem) => void
-}
-
-export function PizzaBuilder({ items, onAdd }: PizzaBuilderProps) {
-  const categories = [...new Set(items.map((i) => i.category))]
-
+export function PizzaBuilder({ pizzas, bases, toppings, onAdd }: PizzaBuilderProps) {
   return (
-    <div className="space-y-6">
-      {categories.map((cat) => (
-        <div key={cat}>
-          <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            {cat}
-          </h3>
-          <div className="space-y-2">
-            {items
-              .filter((i) => i.category === cat)
-              .map((item) => (
-                <PizzaCard key={item.id} item={item} onAdd={onAdd} />
-              ))}
-          </div>
-        </div>
+    <div className="space-y-4">
+      {pizzas.map((pizza) => (
+        <PizzaCard
+          key={pizza.id}
+          pizza={pizza}
+          bases={bases}
+          toppings={toppings}
+          onAdd={onAdd}
+        />
       ))}
     </div>
   )
