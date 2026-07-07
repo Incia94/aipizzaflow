@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const client = axios.create({
-  baseURL: '/api',
+  baseURL: '',
   headers: { 'Content-Type': 'application/json' },
   timeout: 30_000,
 })
@@ -13,28 +13,5 @@ client.interceptors.request.use((config) => {
   }
   return config
 })
-
-client.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('admin_token')
-      if (
-        window.location.pathname.startsWith('/admin') &&
-        !window.location.pathname.endsWith('/login')
-      ) {
-        window.location.href = '/admin/login'
-      }
-    }
-
-    const message =
-      error.response?.data?.message ??
-      error.response?.data?.detail ??
-      error.message ??
-      'An unexpected error occurred'
-
-    return Promise.reject(new Error(message))
-  },
-)
 
 export default client
