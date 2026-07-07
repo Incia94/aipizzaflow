@@ -1,18 +1,18 @@
 // ── Reference ────────────────────────────────────────────────────────────────
 
 export interface MenuItem {
-  id: number
+  id: string
+  category: 'base' | 'pizza' | 'topping'
   name: string
-  category: string
-  available_bases: string[]
-  available_toppings: string[]
   price: number
+  is_available?: boolean
 }
 
 export interface MenuResponse {
-  items: MenuItem[]
+  pizzas: MenuItem[]
+  bases: MenuItem[]
+  toppings: MenuItem[]
 }
-
 // ── Order ─────────────────────────────────────────────────────────────────────
 
 export interface CustomerRequest {
