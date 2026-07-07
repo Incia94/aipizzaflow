@@ -45,12 +45,12 @@ app.add_middleware(
 
 register_exception_handlers(app)
 
-app.include_router(auth_router, prefix="/auth", tags=["Auth"])
-app.include_router(reference_router, prefix="/menu", tags=["Menu"])
-app.include_router(order_router, prefix="/orders", tags=["Orders"])
-app.include_router(checkout_router, prefix="/checkout", tags=["Checkout"])
-app.include_router(analytics_router, prefix="/analytics", tags=["Analytics"])
-app.include_router(ai_advisor_router, prefix="/ai", tags=["AI Advisor"])
+app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
+app.include_router(reference_router, prefix="/api/menu", tags=["Menu"])
+app.include_router(order_router, prefix="/api/orders", tags=["Orders"])
+app.include_router(checkout_router, prefix="/api/checkout", tags=["Checkout"])
+app.include_router(analytics_router, prefix="/api/analytics", tags=["Analytics"])
+app.include_router(ai_advisor_router, prefix="/api/ai", tags=["AI Advisor"])
 
 
 @app.get("/", tags=["Health"])
