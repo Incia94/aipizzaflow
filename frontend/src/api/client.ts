@@ -26,11 +26,13 @@ client.interceptors.response.use(
         window.location.href = '/admin/login'
       }
     }
+
     const message =
       error.response?.data?.message ??
       error.response?.data?.detail ??
       error.message ??
       'An unexpected error occurred'
+
     return Promise.reject(new Error(message))
   },
 )
