@@ -4,12 +4,12 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.contexts.ai_advisor.router import router as ai_advisor_router
-from app.contexts.analytics.router import router as analytics_router
-from app.contexts.auth.router import router as auth_router
-from app.contexts.checkout.router import router as checkout_router
-from app.contexts.order.router import router as order_router
-from app.contexts.reference.router import router as reference_router
+from app.contexts.ai_advisor.routes import router as ai_advisor_router
+from app.contexts.analytics.routes import router as analytics_router
+from app.contexts.auth.routes import router as auth_router
+from app.contexts.checkout.routes import router as checkout_router
+from app.contexts.order.routes import router as order_router
+from app.contexts.reference.routes import router as reference_router
 from app.shared.config import settings
 from app.shared.database import Base, engine, verify_connection
 
