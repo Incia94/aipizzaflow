@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Float, Integer, JSON, String
+from sqlalchemy import Boolean, Column, Numeric, String
 
 from app.shared.database import Base
 
@@ -6,10 +6,8 @@ from app.shared.database import Base
 class MenuItem(Base):
     __tablename__ = "menu_items"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    id = Column(String, primary_key=True, index=True)
     category = Column(String, nullable=False)
-    available_bases = Column(JSON, nullable=False)
-    available_toppings = Column(JSON, nullable=False)
-    price = Column(Float, nullable=False)
+    name = Column(String, nullable=False)
+    price = Column(Numeric, nullable=False)
     is_available = Column(Boolean, default=True, nullable=False)
